@@ -1,11 +1,8 @@
-import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAllUsers, updateUserRole } from '../services/auth'
 
 export default function Users() {
   const queryClient = useQueryClient()
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [selectedRole, setSelectedRole] = useState('')
 
   const { data: users, isLoading, error } = useQuery({
     queryKey: ['users'],
@@ -17,7 +14,6 @@ export default function Users() {
       updateUserRole(userId, role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
-      setEditingId(null)
     }
   })
 

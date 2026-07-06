@@ -32,7 +32,7 @@ export function useAuth() {
     fetchUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (_event, session) => {  // ← DÜZELTİLDİ
         try {
           setUser(session?.user || null)
           

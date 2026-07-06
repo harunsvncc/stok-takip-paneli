@@ -16,9 +16,10 @@ import {
   Line
 } from 'recharts'
 
+// RENKLER
 const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444', '#06b6d4', '#f97316']
 
-// Dashboard verilerini çek (Grafikler için eklendi)
+// Dashboard verilerini çek
 const fetchDashboardData = async () => {
   // Toplam ürün sayısı
   const { count: totalProducts, error: err1 } = await supabase
@@ -131,9 +132,6 @@ const fetchDashboardData = async () => {
   
   if (err6) throw new Error(err6.message)
 
-  // Renkler
-  const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444', '#06b6d4', '#f97316']
-
   return {
     totalProducts: totalProducts || 0,
     totalCategories: totalCategories || 0,
@@ -183,8 +181,8 @@ export default function Dashboard() {
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <p className="text-gray-500 text-sm">Düşük Stok</p>
-          <p className={`text-3xl font-bold ${data?.lowStockCount > 0 ? 'text-red-600' : 'text-gray-600'}`}>
-            {data?.lowStockCount}
+          <p className={`text-3xl font-bold ${(data?.lowStockCount || 0) > 0 ? 'text-red-600' : 'text-gray-600'}`}>
+            {data?.lowStockCount || 0}
           </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
@@ -220,12 +218,12 @@ export default function Dashboard() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
               >
-                {data?.categoryData.map((entry: any, index: number) => (
+                {data?.categoryData.map((_entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -254,7 +252,7 @@ export default function Dashboard() {
       )}
 
       {/* Düşük Stok Uyarıları */}
-      {data?.lowStockCount > 0 && (
+      {(data?.lowStockCount || 0) > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <h2 className="text-lg font-semibold text-red-800 mb-3">⚠️ Düşük Stok Uyarıları</h2>
           <ul className="space-y-2">

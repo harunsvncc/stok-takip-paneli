@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../services/supabase'
-import { useAuth } from '../hooks/useAuth'
 
 // Tüm ürünleri çek
 const fetchProducts = async () => {
@@ -40,20 +39,16 @@ const exportToCSV = (data: any[], filename: string, headers: string[]) => {
     return
   }
 
-  // CSV başlıkları
   let csv = headers.join(',') + '\n'
   
-  // CSV satırları (ilk 10 alanı al)
   data.forEach(row => {
     const values = headers.map(header => {
       const value = row[header] || ''
-      // Özel karakterleri temizle
       return `"${String(value).replace(/"/g, '""')}"`
     })
     csv += values.join(',') + '\n'
   })
 
-  // Dosyayı indir
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const link = document.createElement('a')
   const url = URL.createObjectURL(blob)
@@ -66,10 +61,8 @@ const exportToCSV = (data: any[], filename: string, headers: string[]) => {
 }
 
 export default function Reports() {
-  const { isPersonel } = useAuth()
   const [activeTab, setActiveTab] = useState<'products' | 'movements'>('products')
 
-  // Verileri çek
   const { data: products, isLoading: productsLoading } = useQuery({
     queryKey: ['reports-products'],
     queryFn: fetchProducts
